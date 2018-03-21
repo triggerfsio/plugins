@@ -108,7 +108,9 @@ func (api) Init(data *Message, response *bson.M) error {
 
 // NOTE: you HAVE to have a function called "Kill"
 // THIS FUNCTION HAS TO EXIST (you can change the function body. for example if you have no process to kill, just return)
+// this Kill function will be called by the worker if a timeout has been reached.
+// you can put your code here for proper cleanup of your plugin, to remove dirty files, or whatever you need to do to reach a clean state.
 func (api) Kill(data []string, response *[]string) error {
-	// we have no kill method here
+	// we have nothing to do here. so just return.
 	return nil
 }
