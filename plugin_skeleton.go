@@ -62,7 +62,7 @@ func (api) Init(data *Message, response *bson.M) error {
 	log.Print(command)
 
 	// occasionally update the client with information in realtime
-	stdoutchan.SendMessage("loog what I'm doing ma...")
+	stdoutchan.SendMessage("look what I'm doing ma...")
 
 	// Provide your exitcode and optionally your result if you have any results to give back.
 	*response = bson.M{
