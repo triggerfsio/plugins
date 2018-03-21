@@ -71,7 +71,7 @@ func (api) Init(data *Message, response *bson.M) error {
 	}
 
 	// IMPORTANT:
-	// you MUST close the stdoutchan channel with a "CLOSE" message, otherwise bad things will happen!
+	// you MUST close the other side of the stdoutchan channel (at the worker) with a "CLOSE" message, otherwise bad things will happen!
 	stdoutchan.SendMessage("CLOSE")
 
 	return nil
