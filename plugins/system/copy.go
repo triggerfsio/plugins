@@ -1,11 +1,12 @@
 package main
 
 import (
-	"bufio"
 	"log"
 	"net/rpc/jsonrpc"
+	"os"
 	"os/exec"
-	"syscall"
+	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/natefinch/pie"
@@ -46,7 +47,7 @@ func (api) Init(data *Message, response *bson.M) error {
 	}
 
 	command := data.Command
-	_ = data.Args
+	args := data.Args
 
 	stdoutchan, err := zmq4.NewSocket(zmq4.PAIR)
 	if err != nil {
@@ -58,62 +59,46 @@ func (api) Init(data *Message, response *bson.M) error {
 	}
 	defer stdoutchan.Close()
 
-	cmd = exec.Command("bash", "-c", command)
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
-		log.Printf("Error setting up stdoutpipe: %s", err)
-		return err
-	}
-	stderr, err := cmd.StderrPipe()
-	if err != nil {
-		log.Printf("Error setting up stderrpipe: %s", err)
-		return err
-	}
+	path := args["path"]
 
-	// start the command after having set up the pipe
-	if err := cmd.Start(); err != nil {
-		log.Printf("Error executing the command: %s", err)
-		return err
-	}
-	log.Printf("Started process with pid %d\n", cmd.Process.Pid)
-
-	var output []string
-	// read command's stdout line by line
-	bufout := bufio.NewScanner(stdout)
-	buferr := bufio.NewScanner(stderr)
-
-	go func() error {
-		for buferr.Scan() {
-			line := buferr.Text()
-			output = append(output, line)
-			stdoutchan.SendMessage(line)
-		}
-		return nil
-	}()
-
-	for bufout.Scan() {
-		line := bufout.Text()
-		output = append(output, line)
-		stdoutchan.SendMessage(line)
-	}
-
-	var exitCode int
-	if err := cmd.Wait(); err != nil {
-		if exitError, ok := err.(*exec.ExitError); ok {
-			ws := exitError.Sys().(syscall.WaitStatus)
-			exitCode = ws.ExitStatus()
-		} else {
-			exitCode = defaultFailedCode
+	if strings.HasSuffix(path, "/") {
+		if _, err := os.Stat(path); os.IsNotExist(err) {
+			err := os.MkdirAll(path, 0755)
+			if err != nil {
+				stdoutchan.SendMessage("Couldn't create directory.")
+				stdoutchan.SendMessage("CLOSE")
+				return err
+			}
 		}
 	} else {
-		ws := cmd.ProcessState.Sys().(syscall.WaitStatus)
-		exitCode = ws.ExitStatus()
+		if _, err := os.Stat(filepath.Dir(path)); os.IsNotExist(err) {
+			err := os.MkdirAll(filepath.Dir(path), 0755)
+			if err != nil {
+				stdoutchan.SendMessage("Couldn't create directory.")
+				stdoutchan.SendMessage("CLOSE")
+				return err
+			}
+		}
+		file, err := os.Create(path)
+		if err != nil {
+			stdoutchan.SendMessage("Couldn't create file.")
+			stdoutchan.SendMessage("CLOSE")
+			return err
+		}
+		_, err = file.Write([]byte(command))
+		if err != nil {
+			stdoutchan.SendMessage("Couldn't write to file.")
+			stdoutchan.SendMessage("CLOSE")
+			return err
+		}
 	}
 
 	*response = bson.M{
-		"exitcode": exitCode,
-		"result":   output,
+		"exitcode": 200,
+		"result":   "OK",
 	}
+
+	stdoutchan.SendMessage("Successfully copied file.")
 
 	// IMPORTANT:
 	// you MUST close the stdoutchan channel with a "CLOSE" message, otherwise bad things will happen!
