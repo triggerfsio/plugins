@@ -16,7 +16,6 @@ import (
 const defaultFailedCode = 1
 
 var returncode string
-var stdio chan []string
 var cmd *exec.Cmd
 
 type Message struct {
@@ -28,7 +27,6 @@ type Message struct {
 }
 
 func main() {
-	stdio = make(chan []string)
 	log.SetPrefix("[command plugin log] ")
 
 	p := pie.NewProvider()
