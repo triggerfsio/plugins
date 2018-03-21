@@ -110,7 +110,14 @@ func (api) Init(data *Message, response *bson.M) error {
 // THIS FUNCTION HAS TO EXIST (you can change the function body. for example if you have no process to kill, just return)
 // this Kill function will be called by the worker if a timeout has been reached.
 // you can put your code here for proper cleanup of your plugin, to remove dirty files, or whatever you need to do to reach a clean state.
+// Note that the Kill function has data and response arguments. but they will always be nil. this function will ALWAYS be called with nil arguments.
+// for the curious ones: any function of the api receiver has to have a valid function signature to work with the pie plugin.
 func (api) Kill(data []string, response *[]string) error {
 	// we have nothing to do here. so just return.
 	return nil
 }
+
+// YOUR OWN FUNCTIONS HERE
+// func doWork() {
+// 	...
+// }
