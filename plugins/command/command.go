@@ -43,9 +43,6 @@ func (api) Init(data *Message, response *bson.M) error {
 		return nil
 	}
 
-	command := data.Command
-	_ = data.Args
-
 	stdoutchan, err := zmq4.NewSocket(zmq4.PAIR)
 	if err != nil {
 		return err
@@ -55,6 +52,14 @@ func (api) Init(data *Message, response *bson.M) error {
 		return err
 	}
 	defer stdoutchan.Close()
+
+	command := data.Command
+
+	if len(command) == 0 {
+		stdoutchan.SendMessage("No command specified. Aborting.")
+		stdoutchan.SendMessage("DONE", 500)
+		return nil
+	}
 
 	cmd = exec.Command("bash", "-c", command)
 	stdout, err := cmd.StdoutPipe()
@@ -113,9 +118,18 @@ func (api) Init(data *Message, response *bson.M) error {
 		"result":   output,
 	}
 
+	// Provide your exitcode and optionally your result if you have any results to give back.
+	// this *response data will be used in the future release of the worker.
+	// however, you have to give the worker back a valid *response, even if it doesn't make any use of it, yet.
+	*response = bson.M{
+		"exitcode": 200,
+		"result":   "",
+	}
+
 	// IMPORTANT:
-	// you MUST close the stdoutchan channel with a "CLOSE" message, otherwise bad things will happen!
-	stdoutchan.SendMessage("CLOSE")
+	// we've reached the end of our plugin and everything went well. let's return with a 200 returncode.
+	// again: you MUST close the stdoutchan channel with a "DONE" message, otherwise bad things will happen!
+	stdoutchan.SendMessage("DONE", 200)
 
 	return nil
 }
