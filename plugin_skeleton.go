@@ -72,7 +72,7 @@ func (api) Init(data *Message, response *bson.M) error {
 	// so check for existing args or notify client that you expect something.
 	args := data.Args
 	if _, ok := args["key1"]; !ok {
-		// key1 is not there. tell he client and exit
+		// key1 is not there. tell the client and exit
 		stdoutchan.SendMessage("Expecting plugin argument called key1. Aborting.")
 
 		// we notify the worker that we are already done and want to return immediately.
