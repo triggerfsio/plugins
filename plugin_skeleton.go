@@ -59,7 +59,8 @@ func (api) Init(data *Message, response *bson.M) error {
 	command := data.Command
 
 	// EXAMPLE: abort plugin if no command was specified. (you can skip this if your plugin doesn't expect any input data)
-	// notice how we close the stdoutchan with "DONE" here. you MUST close the channel with a "DONE" message before you return!
+	// notice how we close the stdoutchan with "DONE" here. you MUST close the channel with a "DONE" message
+	// before you return!
 	if len(command) == 0 {
 		stdoutchan.SendMessage("No command specified. Aborting.")
 		stdoutchan.SendMessage("DONE", 500)
@@ -85,7 +86,8 @@ func (api) Init(data *Message, response *bson.M) error {
 	log.Print(command)
 	// occasionally update the client with information in realtime
 	stdoutchan.SendMessage("look what I'm doing ma...")
-	// more work
+	// call some own functions
+	// doWork()
 	stdoutchan.SendMessage("here is your realtime output")
 	// more work
 	stdoutchan.SendMessage("and another one")
@@ -109,9 +111,10 @@ func (api) Init(data *Message, response *bson.M) error {
 // NOTE: you HAVE to have a function called "Kill"
 // THIS FUNCTION HAS TO EXIST (you can change the function body. for example if you have no process to kill, just return)
 // this Kill function will be called by the worker if a timeout has been reached.
-// you can put your code here for proper cleanup of your plugin, to remove dirty files, or whatever you need to do to reach a clean state.
-// Note that the Kill function has data and response arguments. but they will always be nil. this function will ALWAYS be called with nil arguments.
-// for the curious ones: any function of the api receiver has to have a valid function signature to work with the pie plugin.
+// you can put your code here for proper cleanup of your plugin, to remove dirty files, or whatever you need to do
+// to reach a clean state.
+// Note that the Kill function has data and response arguments but they will always be nil.
+// This function will ALWAYS be called with nil arguments.
 func (api) Kill(data []string, response *[]string) error {
 	// we have nothing to do here. so just return.
 	return nil
