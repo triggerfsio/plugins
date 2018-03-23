@@ -14,10 +14,11 @@ https://github.com/triggerfsio/plugins/blob/master/skeleton/plugin.go
 You can use it to write your own plugins.
 
 #### Usage
-Clone this repository
+Clone this repository (go get it)
 ```
-git clone https://github.com/triggerfsio/plugins.git
+go get github.com/triggerfsio/plugins
 ```
+It should be now available in your $GOPATH/src/github.com/triggerfsio/ folder.
 
 If you haven't done so, set the path of the plugins directory in your toml configuration file that is used by your triggerFS workers.
 ```
