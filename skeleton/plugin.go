@@ -4,27 +4,39 @@ import (
 	"github.com/triggerfsio/plugins"
 )
 
-type Command struct {
+// AwesomePlugin is our plugin
+// the plugin needs to satisfy the triggerfs plugin interface by implementing its methods.
+// there are only two methods which need to be implemented. Init and Kill.
+type AwesomePlugin struct {
+	// Plugin will hold the triggerfs plugin methods received by plugins.NewPlugin()
 	Plugin *plugins.Plugin
 }
 
 func main() {
+	// init a new triggerfs plugin
 	plugin := plugins.NewPlugin()
-	plugin.Start(&Command{Plugin: plugin})
+
+	// we feed our command plugin with the newly created plugin
+	// and pass it to plugin.Start() to start it.
+	// we basically feedback our own plugin back to us (backreference) ready for use.
+	plugin.Start(&AwesomePlugin{Plugin: plugin})
 }
 
-func (c *Command) Init(message *plugins.Message, resp *plugins.Response) error {
-	err := c.Plugin.Open(message.Socket)
+// Init implements the triggerfs plugin Interface
+func (ap *AwesomePlugin) Init(message *plugins.Message, resp *plugins.Response) error {
+	// open a channel for realtime communication back to the client.
+	err := ap.Plugin.Open(message.Socket)
 	if err != nil {
 		return err
 	}
-	defer c.Plugin.Close()
+	// IMPORTANT: remember to defer close the channel or you will get timeouts!
+	defer ap.Plugin.Close()
 
+	// now implement your plugin here
 	// do some work here
-	c.Plugin.Send("send line to client in realtime...")
-
+	ap.Plugin.Send("send line to client in realtime...")
 	// do some more work
-	c.Plugin.Send("notify client again...")
+	ap.Plugin.Send("notify client again...")
 
 	// and finally set the exitcode and a final message on resp
 	resp.ExitCode = 0
@@ -33,8 +45,10 @@ func (c *Command) Init(message *plugins.Message, resp *plugins.Response) error {
 	return nil
 }
 
-func (c *Command) Kill(message *plugins.Message, resp *plugins.Response) error {
-	// implement your own kill process
+// Kill implements the triggerfs plugin Interface
+func (ap *AwesomePlugin) Kill(message *plugins.Message, resp *plugins.Response) error {
+	// this method will be called each time we hit a timeout
+	// implement your own kill process here for cleanup things if you need or just return
 
 	// we will just return here.
 	return nil
