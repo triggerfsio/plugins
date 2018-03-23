@@ -47,8 +47,8 @@ func (ap *AwesomePlugin) Init(message *plugins.Message, resp *plugins.Response) 
 
 // Kill implements the triggerfs plugin Interface
 func (ap *AwesomePlugin) Kill(message *plugins.Message, resp *plugins.Response) error {
-	// this method will be called each time we hit a timeout
-	// implement your own kill process here for cleanup things if you need or just return
+	// this method will be called by the worker each time we hit a timeout.
+	// implement your own kill process here to cleanup things if you need or just return.
 
 	// we will just return here.
 	return nil
