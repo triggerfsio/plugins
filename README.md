@@ -14,7 +14,7 @@ https://github.com/triggerfsio/plugins/blob/master/skeleton/plugin.go
 You can use it to write your own plugins.
 
 #### Usage
-Clone this repository (`go get` it)
+Clone this repository using `go get`
 ```
 go get github.com/triggerfsio/plugins
 ```
