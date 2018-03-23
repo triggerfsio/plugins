@@ -10,7 +10,7 @@ This repository serves as both the lib being used for writing your own plugins (
 
 The plugins are well tested and known to be working. If you experience any problems please open an issue so we can help you right away.
 
-There is a plugin skeleton for easy copy pasting boilerplate and serves you with a clean plugin body.
+There is a plugin skeleton for easy copy pasting boilerplate which serves you with a clean plugin body.
 https://github.com/triggerfsio/plugins/blob/master/skeleton/plugin.go
 
 You can use it to write your own plugins.
