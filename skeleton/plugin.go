@@ -6,10 +6,12 @@ import (
 
 // AwesomePlugin is our plugin
 // the plugin needs to satisfy the triggerfs plugin interface by implementing its methods.
-// there are only two methods which need to be implemented. Init and Kill.
+// there are only two methods which need to be implemented:
+// Init(message *plugins.Message, resp *plugins.Response) error
+// Kill(message *plugins.Message, resp *plugins.Response) error
 type AwesomePlugin struct {
 	// Plugin will hold the triggerfs plugin methods received by plugins.NewPlugin()
-	Plugin *plugins.Plugin
+	Plugin *plugins.PluginWrapper
 }
 
 func main() {

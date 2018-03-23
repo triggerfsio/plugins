@@ -10,7 +10,7 @@ import (
 )
 
 type Command struct {
-	Plugin *plugins.Plugin
+	Plugin *plugins.PluginWrapper
 	cmd    *exec.Cmd
 }
 

@@ -22,25 +22,18 @@ type Response struct {
 	Output   []string `json:"output"`
 }
 
-type Pluginer interface {
-	Init(*Message, *Response) error
-	Kill(*Message, *Response) error
-}
-
-type Plugin struct {
-	client *zmq4.Socket
-}
+type Plugin interface{}
 
 type PluginWrapper struct {
-	plugin Pluginer
-	*Plugin
+	client *zmq4.Socket
+	plugin Plugin
 }
 
-func NewPlugin() *Plugin {
-	return &Plugin{}
+func NewPlugin() *PluginWrapper {
+	return &PluginWrapper{}
 }
 
-func (pl *Plugin) Start(plugin Pluginer) {
+func (pl *PluginWrapper) Start(plugin Plugin) {
 	log.SetPrefix("[command plugin log] ")
 
 	p := pie.NewProvider()
@@ -55,7 +48,7 @@ func (pl *Plugin) Start(plugin Pluginer) {
 	p.ServeCodec(jsonrpc.NewServerCodec)
 }
 
-func (pl *Plugin) Send(data string) error {
+func (pl *PluginWrapper) Send(data string) error {
 	_, err := pl.client.SendMessage(data)
 	if err != nil {
 		return err
@@ -63,32 +56,13 @@ func (pl *Plugin) Send(data string) error {
 	return nil
 }
 
-func (pl *Plugin) Close() {
+func (pl *PluginWrapper) Close() {
 	pl.client.SendMessage("CLOSE")
 	pl.client.Close()
 }
 
-func (pl *Plugin) Open(socket string) error {
+func (pl *PluginWrapper) Open(socket string) error {
 	err := pl.client.Connect(socket)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (pw *PluginWrapper) Init(message *Message, resp *Response) error {
-	if message == nil {
-		log.Fatalln("No message received. Aborting.")
-	}
-	err := pw.plugin.Init(message, resp)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (pw *PluginWrapper) Kill(message *Message, resp *Response) error {
-	err := pw.plugin.Kill(message, resp)
 	if err != nil {
 		return err
 	}
