@@ -16,7 +16,7 @@ func main() {
 	// init a new triggerfs plugin
 	plugin := plugins.NewPlugin()
 
-	// we feed our command plugin with the newly created plugin
+	// we feed our AwesomePlugin plugin with the newly created plugin
 	// and pass it to plugin.Start() to start it.
 	// we basically feedback our own plugin back to us (backreference) ready for use.
 	plugin.Start(&AwesomePlugin{Plugin: plugin})
