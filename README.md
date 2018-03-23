@@ -33,7 +33,7 @@ pluginspath = "/home/$yourusername/gocode/src/github.com/triggerfsio/plugins/plu
 
 Go to the folder of your desired plugin and build it with `go build`:
 ```
-cd plugins/plugins/command
+cd $GOPATH/src/github.com/triggerfsio/plugins/plugins/command
 go build command.go
 ```
 
