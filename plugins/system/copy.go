@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -70,10 +69,6 @@ func (c *Command) Init(message *plugins.Message, resp *plugins.Response) error {
 }
 
 func (c *Command) Kill(message *plugins.Message, resp *plugins.Response) error {
-	err := c.cmd.Process.Kill()
-	if err != nil {
-		return err
-	}
-	log.Printf("Killed process with pid %d\n", c.cmd.Process.Pid)
+	// this plugin has nothing to kill
 	return nil
 }
