@@ -6,6 +6,8 @@
 #### Description
 This is the plugins repository with the core plugins created and maintained by triggerFS.
 
+This repository serves as both the lib being used for writing your own plugins (plugins.go) and the reposiroty for the core plugins in the plugins folder.
+
 The plugins are well tested and known to be working. If you experience any problems please open an issue so we can help you right away.
 
 There is a plugin skeleton for easy copy pasting boilerplate and serves you with a clean plugin body.
