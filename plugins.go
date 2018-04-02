@@ -1,6 +1,7 @@
 package plugins
 
 import (
+	"fmt"
 	"log"
 	"net/rpc/jsonrpc"
 	"time"
@@ -13,7 +14,7 @@ type Message struct {
 	Plugin  string            `json:"plugin"`
 	Timeout time.Duration     `json:"timeout"`
 	Args    map[string]string `json:"args"`
-	Command string            `json:"command"`
+	Command []string          `json:"command"`
 	Socket  string            `json:"socket"`
 }
 
@@ -57,7 +58,11 @@ func (pl *PluginWrapper) Send(data string) error {
 }
 
 func (pl *PluginWrapper) Close() {
-	pl.client.SendMessage("CLOSE")
+	if err := recover(); err != nil {
+		pl.Send(fmt.Sprintf("Fatal error (panic) in plugin: %s", err))
+		log.Printf("Fatal error (panic): %s", err)
+	}
+	pl.Send("CLOSE")
 	pl.client.Close()
 }
 

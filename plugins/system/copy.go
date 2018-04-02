@@ -53,7 +53,7 @@ func (c *Command) Init(message *plugins.Message, resp *plugins.Response) error {
 			c.Plugin.Send("Couldn't create file.")
 			return err
 		}
-		_, err = file.Write([]byte(message.Command))
+		_, err = file.Write([]byte(message.Command[0]))
 		if err != nil {
 			c.Plugin.Send("Couldn't write to file.")
 			return err

@@ -46,7 +46,7 @@ func (c *Command) Kill(message *plugins.Message, resp *plugins.Response) error {
 // this function has not the Command receiver by intention.
 // just to show an example of how one can use an own function.
 func runCmd(c *Command, message *plugins.Message, resp *plugins.Response) error {
-	c.cmd = exec.Command("bash", "-c", message.Command)
+	c.cmd = exec.Command("bash", "-c", message.Command[0])
 	stdout, err := c.cmd.StdoutPipe()
 	if err != nil {
 		log.Printf("Error setting up stdoutpipe: %s", err)
