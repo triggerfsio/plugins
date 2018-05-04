@@ -98,7 +98,7 @@ func runCmd(c *Command, message *plugins.Message, resp *plugins.Response) error 
 		exitCode = ws.ExitStatus()
 	}
 
-	resp.Output = output
+	resp.Output = []string{}
 	resp.ExitCode = exitCode
 
 	return nil

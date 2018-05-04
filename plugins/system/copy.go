@@ -53,14 +53,12 @@ func (c *Command) Init(message *plugins.Message, resp *plugins.Response) error {
 			c.Plugin.Send("Couldn't create file.")
 			return err
 		}
-		_, err = file.Write([]byte(message.Command[0]))
+		_, err = file.Write([]byte(message.Command[0] + "\n"))
 		if err != nil {
 			c.Plugin.Send("Couldn't write to file.")
 			return err
 		}
 	}
-
-	c.Plugin.Send("Successfully copied content into file.")
 
 	resp.Output = []string{"Successfully copied content into file."}
 	resp.ExitCode = 200
